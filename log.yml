@@ -1,0 +1,31 @@
+refresh_rate: 600 seconds
+
+appenders:
+  stdout:
+    kind: console
+    encoder:
+      pattern: "{d(%Y-%m-%d %H:%M:%S)} [{l}] {m}{n}"
+  output:
+    kind: rolling_file
+    path: "config/output.log"
+    encoder:
+      pattern: "{d(%Y-%m-%d %H:%M:%S)} [{l}] {m}{n}"
+    policy:
+      kind: compound
+      trigger:
+        kind: size
+        limit: 10 mb
+      roller:
+        kind: fixed_window
+        pattern: "config/output-{}.log"
+        count: 5
+
+root:
+  level: info
+  appenders:
+    - stdout
+    - output
+
+loggers:
+  app::output:
+    level: info

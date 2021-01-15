@@ -1,0 +1,5 @@
+/target
+/downloads
+*.db
+*.log
+config.toml
