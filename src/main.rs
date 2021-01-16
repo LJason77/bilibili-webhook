@@ -13,6 +13,7 @@ mod rss;
 mod setting;
 mod sqlite;
 mod update;
+mod writer;
 
 fn main() {
 	log4rs::init_file("log.yml", Default::default()).unwrap();

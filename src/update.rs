@@ -4,14 +4,14 @@ use std::time::Duration;
 
 use crate::rss::Rss;
 use crate::setting::Feed;
-use crate::sqlite;
 use crate::sqlite::{Content, Source};
+use crate::{sqlite, writer};
 
 pub fn update(feed: Feed) {
 	let connection = sqlite::open();
 
 	loop {
-		let rss = Rss::new(&feed.url).unwrap();
+		let rss = Rss::new(&feed.url);
 
 		// 订阅源
 		let source = Source::query_where(&connection, &feed.url).unwrap_or_else(|_| {
@@ -32,7 +32,7 @@ pub fn update(feed: Feed) {
 						let out = output.wait_with_output().unwrap();
 						let out = String::from_utf8_lossy(&out.stdout);
 						for line in out.split("\n") {
-							info!("{}", line);
+							writer::bilili(line);
 						}
 						info!("\"{}\" 下载成功", &item.title);
 						// 下载成功才在数据库添加内容
@@ -56,6 +56,7 @@ pub fn update(feed: Feed) {
 	}
 }
 
+#[inline(always)]
 fn download(url: &str, feed: &Feed) -> std::io::Result<Child> {
 	let mut cmd = Command::new("bilili");
 	let args = feed.option.split(" ");
