@@ -1,6 +1,5 @@
-use quick_xml::de::from_str;
-use quick_xml::DeError;
 use serde::Deserialize;
+use serde_xml_rs::{from_reader, Error};
 
 #[derive(Debug, Deserialize)]
 pub struct Item {
@@ -27,7 +26,7 @@ pub struct Rss {
 }
 
 impl Rss {
-	pub fn new(url: &str) -> Result<Self, DeError> {
+	pub fn new(url: &str) -> Result<Self, Error> {
 		let res = reqwest::blocking::get(url).unwrap_or_else(|error| {
 			if error.is_request() {
 				error!("请求错误，请检查配置!");
@@ -37,6 +36,6 @@ impl Rss {
 			}
 		});
 		let body = res.text().unwrap();
-		from_str(&body)
+		from_reader(body.as_bytes())
 	}
 }

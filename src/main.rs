@@ -1,9 +1,9 @@
 extern crate config;
 #[macro_use]
 extern crate log;
-extern crate quick_xml;
 extern crate reqwest;
 extern crate serde;
+extern crate serde_xml_rs;
 
 use threadpool::ThreadPool;
 
