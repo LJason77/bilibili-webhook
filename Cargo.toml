@@ -3,18 +3,36 @@ name = "bilibili-webhook"
 version = "0.1.0"
 authors = ["LJason <ljason@ljason.cn>"]
 edition = "2018"
+readme = "README.md"
+repository = "https://github.com/LJason77/bilibili-webhook"
+keywords = ["bilibili", "download", "webhook"]
+categories = ["command-line-utilities"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [profile.release]
+codegen-units = 1
+lto = "fat"
 panic = "abort"
 
 [dependencies]
-config = "0.10"
 log = "0.4"
-log4rs = "1.0"
-reqwest = { version = "0.11", features = ["blocking"] }
 rusqlite = "0.24"
 serde = { version = "1.0", features = ["derive"] }
 serde-xml-rs = "0.4"
 threadpool = "1.8"
+
+[dependencies.config]
+version = "0.10"
+default-features = false
+features = ["toml"]
+
+[dependencies.log4rs]
+version = "1.0"
+default-features = false
+features = ["console_appender", "rolling_file_appender", "compound_policy", "fixed_window_roller", "size_trigger", "config_parsing", "pattern_encoder", "yaml_format"]
+
+[dependencies.reqwest]
+version = "0.11"
+default-features = false
+features = ["blocking"]
