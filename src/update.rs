@@ -23,7 +23,7 @@ pub fn update(feed: Feed) {
 
 		// 内容
 		for item in &rss.channel.item {
-			if let Err(_) = Content::query_where(&connection, &item.link) {
+			if Content::query_where(&connection, &item.link).is_err() {
 				// 返回错误，说明数据库没有这个内容，所以要更新
 				info!("[{}] 更新了一个新视频：{}", &source.title, &item.title);
 				// 下载新视频
@@ -31,7 +31,7 @@ pub fn update(feed: Feed) {
 					Ok(output) => {
 						let out = output.wait_with_output().unwrap();
 						let out = String::from_utf8_lossy(&out.stdout);
-						for line in out.split("\n") {
+						for line in out.split('\n') {
 							writer::bilili(line);
 						}
 						info!("\"{}\" 下载成功", &item.title);
@@ -59,7 +59,7 @@ pub fn update(feed: Feed) {
 #[inline(always)]
 fn download(url: &str, feed: &Feed) -> std::io::Result<Child> {
 	let mut cmd = Command::new("bilili");
-	let args = feed.option.split(" ");
+	let args = feed.option.split(' ');
 	for arg in args {
 		cmd.arg(arg);
 	}
