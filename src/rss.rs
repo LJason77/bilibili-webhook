@@ -30,6 +30,7 @@ pub struct Rss {
 }
 
 impl Rss {
+	#[inline(always)]
 	pub fn new(url: &str) -> Self {
 		let retry: i8 = 5;
 		let res = get(url, retry);

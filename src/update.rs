@@ -32,7 +32,7 @@ pub fn update(feed: Feed) {
 						let out = output.wait_with_output().unwrap();
 						let out = String::from_utf8_lossy(&out.stdout);
 						for line in out.split('\n') {
-							writer::bilili(line);
+							writer::bilili(&source.title, line);
 						}
 						info!("\"{}\" 下载成功", &item.title);
 						// 下载成功才在数据库添加内容

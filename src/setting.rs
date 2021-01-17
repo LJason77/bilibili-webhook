@@ -20,6 +20,7 @@ pub struct Settings {
 }
 
 impl Settings {
+	#[inline(always)]
 	pub fn new(path: &str) -> Settings {
 		let path = Path::new(path);
 		let display = path.display();

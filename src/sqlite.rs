@@ -16,6 +16,7 @@ pub struct Content {
 	pub title: String,
 }
 
+#[inline(always)]
 pub fn open() -> Connection {
 	let connection = Connection::open("config/date.db").unwrap();
 	connection
@@ -45,6 +46,7 @@ pub fn open() -> Connection {
 }
 
 impl Source {
+	#[inline(always)]
 	pub fn insert(connection: &Connection, link: &str, title: &str) -> Source {
 		connection
 			.execute(
@@ -56,6 +58,7 @@ impl Source {
 		Source::query_where(connection, link).unwrap()
 	}
 
+	#[inline(always)]
 	pub fn query_where(connection: &Connection, link: &str) -> Result<Self> {
 		connection.query_row(
 			"SELECT id, link, title FROM sources WHERE link = ?",
@@ -72,6 +75,7 @@ impl Source {
 }
 
 impl Content {
+	#[inline(always)]
 	pub fn insert(
 		connection: &Connection,
 		source_id: &u32,
@@ -87,6 +91,7 @@ impl Content {
 		Content::query_where(connection, link).unwrap()
 	}
 
+	#[inline(always)]
 	pub fn query_where(connection: &Connection, link: &str) -> Result<Self> {
 		connection.query_row(
 			"SELECT id, source_id, link, title FROM contents WHERE link = ?",
