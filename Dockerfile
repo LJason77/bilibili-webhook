@@ -25,8 +25,9 @@ WORKDIR /app
 COPY --from=builder /app/target/release/bilibili-webhook /usr/local/bin/
 COPY log.yml .
 
-RUN apk add -qq --no-cache libc6-compat sqlite-dev python3 py3-pip ffmpeg && \
+RUN apk add -qq --no-cache libc6-compat sqlite-dev python3 py3-pip ffmpeg tzdata && \
   pip3 install --no-cache-dir bilili && \
+  cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
   chown -R pi:pi .
 
 USER pi
