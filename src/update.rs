@@ -15,8 +15,7 @@ pub fn update(feed: Feed) {
 
 		// 订阅源
 		let source = Source::query_where(&connection, &feed.url).unwrap_or_else(|_| {
-			let title = &rss.channel.title[0..&rss.channel.title.len() - 20];
-			Source::insert(&connection, &feed.url, &title)
+			Source::insert(&connection, &feed.url, &rss.channel.title)
 		});
 
 		let mut is_update = false;
@@ -29,6 +28,7 @@ pub fn update(feed: Feed) {
 				// 下载新视频
 				match download(&item.link, &feed) {
 					Ok(output) => {
+						writer::bilili(&source.title, &item.link);
 						let out = output.wait_with_output().unwrap();
 						let out = String::from_utf8_lossy(&out.stdout);
 						for line in out.split('\n') {
@@ -48,6 +48,8 @@ pub fn update(feed: Feed) {
 
 		if !is_update {
 			info!("[{}] 没有更新！", &source.title);
+		} else {
+			info!("[{}] 已更新！", &source.title);
 		}
 
 		// 线程休眠

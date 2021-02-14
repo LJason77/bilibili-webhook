@@ -1,6 +1,6 @@
 [package]
 name = "bilibili-webhook"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["LJason <ljason@ljason.cn>"]
 edition = "2018"
 readme = "README.md"
