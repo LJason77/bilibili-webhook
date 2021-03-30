@@ -6,19 +6,18 @@ WORKDIR /app
 
 COPY Cargo* ./
 
-RUN mkdir src
-RUN echo "fn main() {println!(\"if you see this, the build broke\")}" > src/main.rs
-RUN RUSTFLAGS="-C target-cpu=native" cargo build --release
-RUN rm -f target/release/deps/bilibili_webhook*
+RUN mkdir src && \
+    echo "fn main() {println!(\"if you see this, the build broke\")}" > src/main.rs && \
+    RUSTFLAGS="-C target-cpu=native" cargo build --release -q && \
+    rm -f target/release/deps/bilibili_webhook* src/main.rs
 
 COPY . .
 
-RUN RUSTFLAGS="-C target-cpu=native" cargo build --release
+RUN RUSTFLAGS="-C target-cpu=native" cargo build --release -q
 
 FROM alpine:latest
 
-RUN addgroup -g 1000 pi
-RUN adduser -D -s /bin/sh -u 1000 -G pi pi
+RUN addgroup -g 1000 pi && adduser -D -s /bin/sh -u 1000 -G pi pi
 
 WORKDIR /app
 
