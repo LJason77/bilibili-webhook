@@ -29,7 +29,7 @@ impl Settings {
 		let mut file = fs::File::open(&path).unwrap_or_else(|error| {
 			if error.kind() == ErrorKind::NotFound {
 				error!("配置文件不存在！请先创建：{}", display);
-				panic!(error);
+				panic!("{}", error);
 			} else {
 				error!("无法打开 {}：{}", display, error);
 				panic!();
