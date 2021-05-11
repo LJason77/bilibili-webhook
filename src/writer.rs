@@ -1,6 +1,9 @@
-use std::fs;
-use std::fs::{File, OpenOptions};
-use std::io::{ErrorKind, Write};
+use std::{
+	fs,
+	io::{self, Write},
+};
+
+use log::error;
 
 #[inline(always)]
 pub fn bilili(source: &str, output: &str) {
@@ -8,12 +11,12 @@ pub fn bilili(source: &str, output: &str) {
 	fs::create_dir_all("config/bilili").unwrap_or_else(|error| {
 		error!("{:?}", error);
 	});
-	let mut file = OpenOptions::new()
+	let mut file = fs::OpenOptions::new()
 		.append(true)
 		.open(&log_file)
 		.unwrap_or_else(|error| {
-			if error.kind() == ErrorKind::NotFound {
-				File::create(&log_file).unwrap_or_else(|error| {
+			if error.kind() == io::ErrorKind::NotFound {
+				fs::File::create(&log_file).unwrap_or_else(|error| {
 					error!("{:?}", error);
 					panic!();
 				})

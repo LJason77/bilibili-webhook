@@ -1,14 +1,14 @@
 use rusqlite::{params, Connection, Result};
 use serde::Deserialize;
 
-#[derive(Debug, Deserialize)]
+#[derive(Deserialize)]
 pub struct Source {
 	pub id: u32,
 	pub link: String,
 	pub title: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Deserialize)]
 pub struct Content {
 	pub id: u32,
 	pub source_id: u32,
@@ -54,7 +54,7 @@ impl Source {
 				params![link, title],
 			)
 			.unwrap();
-		info!("已添加订阅源：[{}]", title);
+		log::info!("已添加订阅源：[{}]", title);
 		Source::query_where(connection, link).unwrap()
 	}
 

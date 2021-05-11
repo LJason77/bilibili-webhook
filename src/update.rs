@@ -1,17 +1,21 @@
-use std::process::{Child, Command, Stdio};
-use std::thread;
-use std::time::Duration;
+use std::process;
 
-use crate::rss::Rss;
-use crate::setting::Feed;
-use crate::sqlite::{Content, Source};
-use crate::{sqlite, writer};
+use log::info;
+
+use crate::{
+	models::{
+		self,
+		setting::Feed,
+		sqlite::{Content, Source},
+	},
+	writer,
+};
 
 pub fn update(feed: Feed) {
-	let connection = sqlite::open();
+	let connection = models::sqlite::open();
 
 	loop {
-		let rss = Rss::new(&feed.url);
+		let rss = models::rss::Rss::new(&feed.url);
 
 		// 订阅源
 		let source = Source::query_where(&connection, &feed.url).unwrap_or_else(|_| {
@@ -40,7 +44,7 @@ pub fn update(feed: Feed) {
 						is_update = true;
 					}
 					Err(error) => {
-						error!("{}", error);
+						log::error!("{}", error);
 					}
 				}
 			}
@@ -54,13 +58,13 @@ pub fn update(feed: Feed) {
 
 		// 线程休眠
 		let interval = &feed.interval * 60;
-		thread::sleep(Duration::from_secs(interval));
+		std::thread::sleep(std::time::Duration::from_secs(interval));
 	}
 }
 
 #[inline(always)]
-fn download(url: &str, feed: &Feed) -> std::io::Result<Child> {
-	let mut cmd = Command::new("bilili");
+fn download(url: &str, feed: &Feed) -> std::io::Result<process::Child> {
+	let mut cmd = process::Command::new("bilili");
 	let args = feed.option.split(' ');
 	for arg in args {
 		cmd.arg(arg);
@@ -75,6 +79,6 @@ fn download(url: &str, feed: &Feed) -> std::io::Result<Child> {
 	cmd.arg("-y")
 		.args(&["-d", &format!("downloads/{}", &feed.path)])
 		.arg(url)
-		.stdout(Stdio::piped())
+		.stdout(process::Stdio::piped())
 		.spawn()
 }

@@ -1,25 +1,12 @@
-extern crate config;
-#[macro_use]
-extern crate log;
-extern crate reqwest;
-extern crate serde;
-extern crate serde_xml_rs;
-
-use threadpool::ThreadPool;
-
-use crate::setting::Settings;
-
-mod rss;
-mod setting;
-mod sqlite;
+mod models;
 mod update;
 mod writer;
 
 fn main() {
 	log4rs::init_file("log.yml", Default::default()).unwrap();
-	info!("RUA！");
+	log::info!("RUA！");
 
-	let settings = Settings::new("config/config.toml");
+	let settings = crate::models::setting::Settings::new("config/config.toml");
 
 	// 提取需要更新的订阅
 	let mut update_feeds = Vec::new();
@@ -32,7 +19,7 @@ fn main() {
 	// 根据订阅数量创建线程
 	let num_threads = update_feeds.len();
 	if num_threads > 0 {
-		let pool = ThreadPool::new(num_threads);
+		let pool = threadpool::ThreadPool::new(num_threads);
 		for feed in update_feeds {
 			pool.execute(move || update::update(feed));
 		}

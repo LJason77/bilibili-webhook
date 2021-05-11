@@ -1,11 +1,9 @@
-use std::fs;
-use std::io::{ErrorKind, Read};
-use std::path::Path;
+use std::io::{self, Read};
 
-use config::{Config, File, FileFormat};
+use log::error;
 use serde::Deserialize;
 
-#[derive(Debug, Deserialize)]
+#[derive(Deserialize)]
 pub struct Feed {
 	pub url: String,
 	pub interval: u64,
@@ -14,7 +12,7 @@ pub struct Feed {
 	pub update: bool,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Deserialize)]
 pub struct Settings {
 	pub feed: Vec<Feed>,
 }
@@ -22,12 +20,12 @@ pub struct Settings {
 impl Settings {
 	#[inline(always)]
 	pub fn new(path: &str) -> Settings {
-		let path = Path::new(path);
+		let path = std::path::Path::new(path);
 		let display = path.display();
 
 		// 用只读方式打开文件
-		let mut file = fs::File::open(&path).unwrap_or_else(|error| {
-			if error.kind() == ErrorKind::NotFound {
+		let mut file = std::fs::File::open(&path).unwrap_or_else(|error| {
+			if error.kind() == io::ErrorKind::NotFound {
 				error!("配置文件不存在！请先创建：{}", display);
 				panic!("{}", error);
 			} else {
@@ -44,9 +42,9 @@ impl Settings {
 		});
 
 		// 从字符串解析配置
-		let mut config = Config::new();
+		let mut config = config::Config::new();
 		config
-			.merge(File::from_str(&content, FileFormat::Toml))
+			.merge(config::File::from_str(&content, config::FileFormat::Toml))
 			.unwrap_or_else(|error| {
 				error!("解析配置文件错误：{}", error);
 				panic!()
