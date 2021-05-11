@@ -1,4 +1,4 @@
-use rusqlite::{params, Connection, Result, NO_PARAMS};
+use rusqlite::{params, Connection, Result};
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
@@ -28,7 +28,7 @@ pub fn open() -> Connection {
     link      TEXT NOT NULL,
     title     TEXT NOT NULL
 )",
-			NO_PARAMS,
+			[],
 		)
 		.unwrap();
 	connection
@@ -39,7 +39,7 @@ pub fn open() -> Connection {
     link      TEXT NOT NULL,
     title     TEXT NOT NULL
 )",
-			NO_PARAMS,
+			[],
 		)
 		.unwrap();
 	connection
