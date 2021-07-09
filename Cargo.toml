@@ -8,8 +8,6 @@ repository = "https://github.com/LJason77/bilibili-webhook"
 keywords = ["bilibili", "download", "webhook"]
 categories = ["command-line-utilities"]
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [profile.release]
 codegen-units = 1
 lto = "fat"
