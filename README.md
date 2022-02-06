@@ -1,5 +1,9 @@
 # bilibili-webhook
 
+[![build badge](https://github.com/LJason77/bilibili-webhook/actions/workflows/rust.yml/badge.svg?branch=master)](https://github.com/LJason77/bilibili-webhook/actions/workflows/rust.yml)
+![GitHub forks](https://img.shields.io/github/forks/LJason77/bilibili-webhook?style=social)
+![GitHub Repo stars](https://img.shields.io/github/stars/LJason77/bilibili-webhook?style=social)
+
 > 通过 webhook 自动下载 B站 视频。
 
 ## 介绍
@@ -29,3 +33,9 @@ docker build -t bilibili-webhook .
 ```
 docker run -d --restart always --name bilibili-webhook -e SESSDATA=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA -v /mnt/downloads:/app/downloads -v /mnt/Data/bilibili-webhook:/app/config bilibili-webhook
 ```
+
+## 许可
+
+[![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu)
+[![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg)](https://github.com/996icu/996.ICU/blob/master/LICENSE)
+![GitHub](https://img.shields.io/github/license/LJason77/bilibili-webhook)
