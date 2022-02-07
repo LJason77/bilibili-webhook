@@ -18,7 +18,6 @@ pub struct Settings {
 }
 
 impl Settings {
-    #[inline(always)]
     pub fn new(path: &str) -> Settings {
         let path = std::path::Path::new(path);
         let display = path.display();

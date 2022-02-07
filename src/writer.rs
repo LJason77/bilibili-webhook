@@ -5,7 +5,6 @@ use std::{
 
 use log::error;
 
-#[inline(always)]
 pub fn bilili(source: &str, output: &str) {
     let log_file = format!("config/bilili/{}.log", source);
     fs::create_dir_all("config/bilili").unwrap_or_else(|error| {

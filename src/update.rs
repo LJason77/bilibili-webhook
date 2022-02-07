@@ -11,7 +11,7 @@ use crate::{
     writer,
 };
 
-pub fn update(feed: Feed) {
+pub fn update(feed: &Feed) {
     let connection = models::sqlite::open();
 
     loop {
@@ -29,7 +29,7 @@ pub fn update(feed: Feed) {
                 // 返回错误，说明数据库没有这个内容，所以要更新
                 info!("[{}] 更新了一个新视频：{}", &source.title, &item.title);
                 // 下载新视频
-                match download(&item.link, &feed) {
+                match download(&item.link, feed) {
                     Ok(output) => {
                         writer::bilili(&source.title, &item.link);
                         let out = output.wait_with_output().unwrap();
@@ -39,7 +39,7 @@ pub fn update(feed: Feed) {
                         }
                         info!("\"{}\" 下载成功", &item.title);
                         // 下载成功才在数据库添加内容
-                        Content::insert(&connection, &source.id, &item.link, &item.title);
+                        Content::insert(&connection, source.id, &item.link, &item.title);
                         is_update = true;
                     }
                     Err(error) => {
@@ -49,10 +49,10 @@ pub fn update(feed: Feed) {
             }
         }
 
-        if !is_update {
-            info!("[{}] 没有更新！", &source.title);
-        } else {
+        if is_update {
             info!("[{}] 已更新！", &source.title);
+        } else {
+            info!("[{}] 没有更新！", &source.title);
         }
 
         // 线程休眠
@@ -61,7 +61,6 @@ pub fn update(feed: Feed) {
     }
 }
 
-#[inline(always)]
 fn download(url: &str, feed: &Feed) -> std::io::Result<process::Child> {
     let mut cmd = process::Command::new("bilili");
     let args = feed.option.split(' ');
