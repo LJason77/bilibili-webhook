@@ -20,6 +20,8 @@ impl Settings {
     pub fn new(path: &str) -> Settings {
         let path = Path::new(path);
         let setting = read_to_string(&path).expect("配置文件不存在！请先创建");
-        toml::from_str(&setting).unwrap()
+        toml::from_str(&setting).unwrap_or_else(|error| {
+            panic!("配置解析失败：{:?}\n", error);
+        })
     }
 }
