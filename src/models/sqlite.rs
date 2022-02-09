@@ -47,10 +47,7 @@ pub fn open() -> Connection {
 impl Source {
     pub fn insert(connection: &Connection, link: &str, title: &str) -> Source {
         connection
-            .execute(
-                "insert into sources (link, title) VALUES (?1, ?2)",
-                params![link, title],
-            )
+            .execute("insert into sources (link, title) VALUES (?1, ?2)", params![link, title])
             .unwrap();
         log::info!("已添加订阅源：[{}]", title);
         Source::query_where(connection, link).unwrap()
@@ -60,13 +57,7 @@ impl Source {
         connection.query_row(
             "SELECT id, link, title FROM sources WHERE link = ?",
             params![link],
-            |row| {
-                Ok(Source {
-                    id: row.get(0)?,
-                    link: row.get(1)?,
-                    title: row.get(2)?,
-                })
-            },
+            |row| Ok(Source { id: row.get(0)?, link: row.get(1)?, title: row.get(2)? }),
         )
     }
 }

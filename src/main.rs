@@ -24,9 +24,8 @@ fn main() {
     }
 
     // 根据订阅数量创建线程
-    let num_threads = update_feeds.len();
-    if num_threads > 0 {
-        let pool = ThreadPool::new(num_threads);
+    if !update_feeds.is_empty() {
+        let pool = ThreadPool::new(update_feeds.len());
         for feed in update_feeds {
             pool.execute(move || update::update(&feed));
         }
