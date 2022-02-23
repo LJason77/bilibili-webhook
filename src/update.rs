@@ -1,30 +1,33 @@
-use std::process;
+use std::{
+    env::var_os,
+    io::Result,
+    process::{Child, Command, Stdio},
+};
 
 use log::info;
 
 use crate::{
-    models::{
-        self,
-        setting::Feed,
-        sqlite::{Content, Source},
-    },
+    models::{sqlite, Content, Feed, Rss, Source},
     writer,
 };
 
 pub fn update(feed: &Feed) {
-    let connection = models::sqlite::open();
+    let connection = sqlite::open();
 
     loop {
-        let rss = models::rss::Rss::new(&feed.url);
+        let url = &feed.url;
 
+        let rss = Rss::new(url);
+
+        let channel = &rss.channel;
         // 订阅源
-        let source = Source::query_where(&connection, &feed.url)
-            .unwrap_or_else(|_| Source::insert(&connection, &feed.url, &rss.channel.title));
+        let source = Source::query_where(&connection, url)
+            .unwrap_or_else(|_| Source::insert(&connection, url, &channel.title));
 
         let mut is_update = false;
 
         // 内容
-        for item in &rss.channel.item {
+        for item in &channel.item {
             if Content::query_where(&connection, &item.link).is_err() {
                 // 返回错误，说明数据库没有这个内容，所以要更新
                 info!("[{}] 更新了一个新视频：{}", &source.title, &item.title);
@@ -61,22 +64,18 @@ pub fn update(feed: &Feed) {
     }
 }
 
-fn download(url: &str, feed: &Feed) -> std::io::Result<process::Child> {
-    let mut cmd = process::Command::new("bilili");
+fn download(url: &str, feed: &Feed) -> Result<Child> {
+    let mut cmd = Command::new("bilili");
     let args = feed.option.split(' ');
     for arg in args {
         cmd.arg(arg);
     }
 
     // 从系统环境变量获取 sessdata
-    let sessdata = std::env::var_os("SESSDATA");
-    if sessdata != None {
-        cmd.args(&["-c", sessdata.unwrap().to_str().unwrap()]);
+    if let Some(sessdata) = var_os("SESSDATA") {
+        cmd.arg("-c").arg(sessdata);
     }
 
-    cmd.arg("-y")
-        .args(&["-d", &format!("downloads/{}", &feed.path)])
-        .arg(url)
-        .stdout(process::Stdio::piped())
-        .spawn()
+    let download_dir = format!("downloads/{}", &feed.path);
+    cmd.arg("-y").args(&["-d", &download_dir]).arg(url).stdout(Stdio::piped()).spawn()
 }

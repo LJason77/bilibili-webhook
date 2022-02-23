@@ -48,13 +48,12 @@ fn get(url: &str, mut retry: i8) -> Response {
 }
 
 impl Rss {
+    #[must_use]
     pub fn new(url: &str) -> Self {
         let retry: i8 = 5;
         let res = get(url, retry);
-        let body = res.text().unwrap();
+        let body = res.text().expect("body 解析错误");
 
-        from_str(&body).unwrap_or_else(|error| {
-            panic!("xml 解析失败：{:?}\n", error);
-        })
+        from_str(&body).expect("xml 解析失败")
     }
 }
