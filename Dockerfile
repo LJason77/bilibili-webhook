@@ -17,7 +17,7 @@ COPY --from=builder /app/target/release/bilibili-webhook /usr/local/bin/
 COPY log.yml .
 
 RUN apk add -qq --no-cache libc6-compat sqlite-dev python3 py3-pip ffmpeg && \
-    pip3 install --no-cache-dir bilili
+    pip3 install --no-cache-dir yutto --pre
 
 RUN addgroup -g 1000 pi && adduser -D -s /bin/sh -u 1000 -G pi pi && chown -R pi:pi .
 

@@ -65,7 +65,7 @@ pub fn update(feed: &Feed) {
 }
 
 fn download(url: &str, feed: &Feed) -> Result<Child> {
-    let mut cmd = Command::new("bilili");
+    let mut cmd = Command::new("yutto");
     let args = feed.option.split(' ');
     for arg in args {
         cmd.arg(arg);
@@ -77,5 +77,5 @@ fn download(url: &str, feed: &Feed) -> Result<Child> {
     }
 
     let download_dir = format!("downloads/{}", &feed.path);
-    cmd.arg("-y").args(&["-d", &download_dir]).arg(url).stdout(Stdio::piped()).spawn()
+    cmd.args(&["-d", &download_dir]).arg(url).stdout(Stdio::piped()).spawn()
 }
