@@ -5,6 +5,8 @@ use threadpool::ThreadPool;
 
 use models::setting::Settings;
 
+use crate::models::Feed;
+
 mod models;
 mod update;
 mod writer;
@@ -16,12 +18,7 @@ fn main() {
     let settings = Settings::new("config/config.toml");
 
     // 提取需要更新的订阅
-    let mut update_feeds = Vec::new();
-    for feed in settings.feed {
-        if feed.update {
-            update_feeds.push(feed);
-        }
-    }
+    let update_feeds: Vec<Feed> = settings.feed.into_iter().filter(|feed| feed.update).collect();
 
     // 根据订阅数量创建线程
     if !update_feeds.is_empty() {
