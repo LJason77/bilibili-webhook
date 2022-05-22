@@ -1,12 +1,14 @@
 max_width = 100
-use_small_heuristics = "Max"
 newline_style = "Unix"
-imports_granularity = "Crate"
-group_imports = "StdExternalCrate"
-format_macro_matchers = true
-condense_wildcard_suffixes = true
-merge_derives = false
-wrap_comments = true
-normalize_comments = true
-report_fixme = "Unnumbered"
-report_todo = "Unnumbered"
+reorder_imports = true
+use_small_heuristics = "Max"
+
+# 稳定后取消注释
+#condense_wildcard_suffixes = true
+#format_macro_matchers = true
+#group_imports = "StdExternalCrate"
+#imports_granularity = "Crate"
+#normalize_comments = true
+#report_fixme = "Unnumbered"
+#report_todo = "Unnumbered"
+#wrap_comments = true
