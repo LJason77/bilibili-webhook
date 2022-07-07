@@ -1,5 +1,6 @@
 use std::{
     env::var_os,
+    fs::read_to_string,
     io::Result,
     process::{Child, Command, Stdio},
 };
@@ -71,8 +72,11 @@ fn download(url: &str, feed: &Feed) -> Result<Child> {
         cmd.arg(arg);
     }
 
-    // 从系统环境变量获取 sessdata
-    if let Some(sessdata) = var_os("SESSDATA") {
+    // 先从本地读取 sessdata
+    if let Ok(sessdata) = read_to_string("config/SESSDATA.txt") {
+        cmd.arg("-c").arg(sessdata);
+        // 如果本地不存在，则从系统环境变量获取 sessdata
+    } else if let Some(sessdata) = var_os("SESSDATA") {
         cmd.arg("-c").arg(sessdata);
     }
 

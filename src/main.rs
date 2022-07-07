@@ -1,11 +1,11 @@
 #![deny(clippy::pedantic)]
 
+use std::{env::var_os, fs::write};
+
 use log4rs::config::Deserializers;
 use threadpool::ThreadPool;
 
-use models::setting::Settings;
-
-use crate::models::Feed;
+use models::{Feed, Settings};
 
 mod models;
 mod update;
@@ -16,6 +16,11 @@ fn main() {
     log::info!("RUA！");
 
     let settings = Settings::new("config/config.toml");
+
+    // 从系统环境变量获取 sessdata，再保存到本地
+    if let Some(sessdata) = var_os("SESSDATA") {
+        write("config/SESSDATA.txt", sessdata.to_str().unwrap()).expect("写入 SESSDATA 失败");
+    }
 
     // 提取需要更新的订阅
     let update_feeds: Vec<Feed> = settings.feed.into_iter().filter(|feed| feed.update).collect();
