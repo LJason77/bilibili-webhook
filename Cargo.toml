@@ -3,7 +3,7 @@ name = "bilibili-webhook"
 version = "0.1.5"
 authors = ["LJason <ljason@ljason.cn>"]
 edition = "2021"
-rust-version = "1.61"
+rust-version = "1.62"
 readme = "README.md"
 repository = "https://github.com/LJason77/bilibili-webhook"
 keywords = ["bilibili", "download", "webhook"]
@@ -16,7 +16,7 @@ panic = "abort"
 
 [dependencies]
 log = "0.4"
-quick-xml = { version = "0.22" , features = ["serialize"]}
+quick-xml = { version = "0.23" , features = ["serialize"]}
 rusqlite = "0.27"
 serde = { version = "1", features = ["derive"] }
 threadpool = "1"
