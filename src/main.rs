@@ -1,6 +1,6 @@
 #![deny(clippy::pedantic)]
 
-use std::{env::var_os, fs::write};
+use std::{env::var_os, fs::write, path::Path};
 
 use log4rs::config::Deserializers;
 use threadpool::ThreadPool;
@@ -17,9 +17,13 @@ fn main() {
 
     let settings = Settings::new("config/config.toml");
 
-    // 从系统环境变量获取 sessdata，再保存到本地
-    if let Some(sessdata) = var_os("SESSDATA") {
-        write("config/SESSDATA.txt", sessdata.to_str().unwrap()).expect("写入 SESSDATA 失败");
+    // 判断是否存在 sessdata 文件
+    let sessdata = Path::new("config/SESSDATA.txt");
+    if !sessdata.exists() {
+        // 从系统环境变量获取 sessdata，再保存到本地
+        if let Some(sessdata) = var_os("SESSDATA") {
+            write("config/SESSDATA.txt", sessdata.to_str().unwrap()).expect("写入 SESSDATA 失败");
+        }
     }
 
     // 提取需要更新的订阅
