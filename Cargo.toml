@@ -1,6 +1,6 @@
 [package]
 name = "bilibili-webhook"
-version = "0.1.5"
+version = "0.1.6"
 authors = ["LJason <ljason@ljason.cn>"]
 edition = "2021"
 rust-version = "1.62"
@@ -16,8 +16,8 @@ panic = "abort"
 
 [dependencies]
 log = "0.4"
-quick-xml = { version = "0.23" , features = ["serialize"]}
-rusqlite = "0.27"
+quick-xml = { version = "0.25" , features = ["serialize"]}
+rusqlite = "0.28"
 serde = { version = "1", features = ["derive"] }
 threadpool = "1"
 toml = "0.5"
