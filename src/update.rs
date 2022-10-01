@@ -8,7 +8,8 @@ use std::{
 use log::info;
 
 use crate::{
-    models::{sqlite, Content, Feed, Rss, Source},
+    config::Feed,
+    models::{sqlite, Content, Rss, Source},
     writer,
 };
 

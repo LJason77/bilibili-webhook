@@ -1,21 +1,22 @@
 #![deny(clippy::pedantic)]
 
-use std::{env::var_os, fs::write, path::Path};
+use std::{env::var_os, error::Error, fs::write, path::Path};
 
 use log4rs::config::Deserializers;
 use threadpool::ThreadPool;
 
-use models::{Feed, Settings};
+use crate::config::{Config, Feed};
 
+mod config;
 mod models;
 mod update;
 mod writer;
 
-fn main() {
-    log4rs::init_file("log.yml", Deserializers::default()).unwrap();
+fn main() -> Result<(), Box<dyn Error>> {
+    log4rs::init_file("log.yml", Deserializers::default())?;
     log::info!("RUA！");
 
-    let settings = Settings::new("config/config.toml");
+    let config = Config::load("config/config.toml")?;
 
     // 判断是否存在 sessdata 文件
     let sessdata = Path::new("config/SESSDATA.txt");
@@ -27,7 +28,7 @@ fn main() {
     }
 
     // 提取需要更新的订阅
-    let update_feeds: Vec<Feed> = settings.feed.into_iter().filter(|feed| feed.update).collect();
+    let update_feeds: Vec<Feed> = config.feed.into_iter().filter(|feed| feed.update).collect();
 
     // 根据订阅数量创建线程
     if !update_feeds.is_empty() {
@@ -37,4 +38,5 @@ fn main() {
         }
         pool.join();
     }
+    Ok(())
 }
