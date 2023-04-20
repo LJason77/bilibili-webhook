@@ -1,26 +1,27 @@
 [package]
 name = "bilibili-webhook"
-version = "0.1.6"
+version = "0.1.7"
 authors = ["LJason <ljason@ljason.cn>"]
 edition = "2021"
-rust-version = "1.62"
+rust-version = "1.68"
 readme = "README.md"
 repository = "https://github.com/LJason77/bilibili-webhook"
 keywords = ["bilibili", "download", "webhook"]
 categories = ["command-line-utilities"]
 
 [profile.release]
+strip = "debuginfo"
 codegen-units = 1
 lto = "fat"
 panic = "abort"
 
 [dependencies]
 log = "0.4"
-quick-xml = { version = "0.25" , features = ["serialize"]}
-rusqlite = "0.28"
+quick-xml = { version = "0.28" , features = ["serialize"]}
+rusqlite = "0.29"
 serde = { version = "1", features = ["derive"] }
 threadpool = "1"
-toml = "0.5"
+toml = "0.7"
 
 [dependencies.log4rs]
 version = "1"
