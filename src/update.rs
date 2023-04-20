@@ -82,5 +82,5 @@ fn download(url: &str, feed: &Feed) -> Result<Child> {
     }
 
     let download_dir = format!("downloads/{}", &feed.path);
-    cmd.args(&["-d", &download_dir]).arg(url).stdout(Stdio::piped()).spawn()
+    cmd.args(["-d", &download_dir]).arg(url).stdout(Stdio::piped()).spawn()
 }

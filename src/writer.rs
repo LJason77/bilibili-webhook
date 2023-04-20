@@ -6,7 +6,7 @@ use std::{
 use log::error;
 
 pub fn bilili(source: &str, output: &str) {
-    let log_file = format!("config/log/{}.log", source);
+    let log_file = format!("config/log/{source}.log");
     create_dir_all("config/bilili").unwrap_or_else(|error| {
         error!("{:?}", error);
     });
