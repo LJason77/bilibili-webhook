@@ -7,8 +7,8 @@
 url = "https://rsshub.app/bilibili/user/video/13297724"
 # 更新频率，单位：分钟
 interval = 60
-# bilili 的下载参数，具体可查看：[bilili](https://github.com/SigureMo/bilili)
-option = "--danmaku=no --playlist-type=no --disable-proxy"
+# bilili 的下载参数，具体可查看：[yutto](https://github.com/yutto-dev/yutto)
+option = "--no-danmaku --proxy=no"
 # 下载路径(相对路径)
 path = "bilibili/Gamker"
 # 是否更新，设为 false 即不更新
@@ -17,6 +17,6 @@ update = true
 [[feed]]
 url = "https://rsshub.app/bilibili/user/video/96639395"
 interval = 60
-option = "--danmaku=no --playlist-type=no --disable-proxy"
+option = "--no-danmaku --proxy=no"
 path = "bilibili/Academia"
 update = false

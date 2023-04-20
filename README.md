@@ -26,13 +26,17 @@ docker build -t bilibili-webhook .
 
 将 *config.toml.example* 复制并重命名为 *config.toml* 放在将要挂载 `/app/config` 的目录下。
 
-如果需要下载 4K 视频，可在运行命令中 `-e` 附上大会员的 **SESSDATA**，具体可查看 [bilili](https://github.com/SigureMo/bilili) 的项目说明。如果没有 **SESSDATA**，即下载普通的 1080P 视频。
+如果需要下载 4K 视频，可在运行命令中 `-e` 附上大会员的 **SESSDATA**，具体可查看 [yutto](https://github.com/yutto-dev/yutto) 的项目说明。如果没有 **SESSDATA**，即下载普通的 1080P 视频。
 
 ## 运行
 
 ```
 docker run -d --restart always --name bilibili-webhook -e SESSDATA=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA -v /mnt/downloads:/app/downloads -v /mnt/Data/bilibili-webhook:/app/config bilibili-webhook
 ```
+
+## 感谢
+
+本项目使用到了可爱的 [yutto](https://github.com/yutto-dev/yutto) 当作下载工具，感谢。
 
 ## 许可
 
