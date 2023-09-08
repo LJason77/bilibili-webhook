@@ -18,7 +18,7 @@ panic = "abort"
 [dependencies]
 log = "0.4"
 quick-xml = { version = "0.30" , features = ["serialize"]}
-rusqlite = "0.29"
+rusqlite = { version = "0.29", features = ["bundled"] }
 serde = { version = "1", features = ["derive"] }
 threadpool = "1"
 toml = "0.7"
