@@ -7,7 +7,7 @@
 url = "https://rsshub.app/bilibili/user/video/13297724"
 # 更新频率，单位：分钟
 interval = 60
-# bilili 的下载参数，具体可查看：[yutto](https://github.com/yutto-dev/yutto)
+# yutto 的下载参数，具体可查看：[yutto](https://github.com/yutto-dev/yutto)
 option = "--no-danmaku --proxy=no"
 # 下载路径(相对路径)
 path = "bilibili/Gamker"
