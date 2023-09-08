@@ -1,6 +1,7 @@
 name: Rust
 
 on:
+  pull_request:
   push:
     branches: [ master ]
 
@@ -8,65 +9,37 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build-clippy:
-    name: Run cargo build
+  style:
+    name: Check Style
     runs-on: ubuntu-latest
+
     steps:
+      - name: Checkout Sources
+        uses: actions/checkout@v3
 
-      - name: Checkout sources
-        uses: actions/checkout@v2
+      - name: Install Rust
+        run: |
+          rustup update stable
+          rustup component add --toolchain stable rustfmt
+          rustup default stable
 
-      - name: Install toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          default: true
-          override: true
-          components: rustfmt, clippy
+      - name: Run Cargo Format
+        run: cargo fmt --all -- --check
 
-      - name: Cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cargo/registry/
-            ~/.cargo/git/
-            target/
-          key: ${{ runner.os }}-cargo-release-${{ hashFiles('**/Cargo.lock') }}
-
-      - name: Run cargo format
-        uses: actions-rs/cargo@v1
-        with:
-          command: fmt
-          args: --all -- --check
-
-      - name: Run cargo build
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: -q --release --locked
-
-      - name: Run cargo clippy
-        uses: actions-rs/cargo@v1
-        with:
-          command: clippy
-          args: -q --release -- --no-deps
-
-  test:
-    name: Run cargo test
+  lint:
+    name: Lint
+    needs: [ style ]
     runs-on: ubuntu-latest
+
     steps:
+      - name: Checkout Sources
+        uses: actions/checkout@v3
 
-      - name: Checkout sources
-        uses: actions/checkout@v2
-
-      - name: Install toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          default: true
-          override: true
+      - name: Install Rust
+        run: |
+          rustup update stable
+          rustup component add --toolchain stable clippy
+          rustup default stable
 
       - name: Cache
         uses: actions/cache@v3
@@ -77,14 +50,77 @@ jobs:
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-      - name: Run test --no-run
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
-          args: -q --no-run
+      - name: Run Cargo Clippy
+        run: cargo clippy -q --release -- --no-deps
 
-      - name: Run test
-        uses: actions-rs/cargo@v1
+  test:
+    name: Test
+    needs: [ style, lint ]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Sources
+        uses: actions/checkout@v3
+
+      - name: Install Rust
+        run: |
+          rustup update stable
+          rustup default stable
+
+      - name: Cache
+        uses: actions/cache@v3
         with:
-          command: test
-          args: -q -- --nocapture
+          path: |
+            ~/.cargo/registry/
+            ~/.cargo/git/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Compile (Tests)
+        run: cargo test -q --no-run
+
+      - name: Run Test
+        run: cargo test -q -- --nocapture
+
+  build:
+    name: Build
+    needs: [ style, lint, test ]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Sources
+        uses: actions/checkout@v3
+
+      - name: Install Rust
+        run: |
+          rustup update stable
+          rustup default stable
+
+      - name: Cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/registry/
+            ~/.cargo/git/
+            target/
+          key: ${{ runner.os }}-cargo-release-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Run Cargo Build
+        run: cargo build -q --release --locked
+
+  doc:
+    name: Build docs
+    needs: [ style, lint, test ]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Sources
+        uses: actions/checkout@v3
+
+      - name: Install Rust
+        run: |
+          rustup update stable
+          rustup default stable
+
+      - name: Build Documentation
+        run: cargo rustdoc -q
