@@ -1,9 +1,9 @@
 [package]
 name = "bilibili-webhook"
-version = "0.1.7"
+version = "0.1.8"
 authors = ["LJason <ljason@ljason77.com>"]
 edition = "2021"
-rust-version = "1.72"
+rust-version = "1.75"
 readme = "README.md"
 repository = "https://github.com/LJason77/bilibili-webhook"
 keywords = ["bilibili", "download", "webhook"]
@@ -17,11 +17,11 @@ panic = "abort"
 
 [dependencies]
 log = "0.4"
-quick-xml = { version = "0.30" , features = ["serialize"]}
-rusqlite = { version = "0.29", features = ["bundled"] }
+quick-xml = { version = "0.31", features = ["serialize"] }
+rusqlite = { version = "0.30", features = ["bundled"] }
 serde = { version = "1", features = ["derive"] }
 threadpool = "1"
-toml = "0.7"
+toml = "0.8"
 
 [dependencies.log4rs]
 version = "1"
