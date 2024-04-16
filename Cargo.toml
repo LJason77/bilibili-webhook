@@ -22,6 +22,7 @@ rusqlite = { version = "0.30", features = ["bundled"] }
 serde = { version = "1", features = ["derive"] }
 threadpool = "1"
 toml = "0.8"
+rand = "0.8"
 
 [dependencies.log4rs]
 version = "1"

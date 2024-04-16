@@ -17,6 +17,10 @@ pub fn update(feed: &Feed) {
     let connection = sqlite::open();
 
     loop {
+        // 随机延迟0到60秒
+        let sleep_time = thread_rng().gen_range(0..60);
+        std::thread::sleep(Duration::from_secs(sleep_time));
+        
         let url = &feed.url;
 
         let rss = Rss::new(url);
