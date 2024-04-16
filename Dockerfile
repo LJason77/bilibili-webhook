@@ -1,6 +1,7 @@
 FROM rust:alpine as builder
 
 WORKDIR /app
+RUN apk add musl-dev libc6-compat openssl-dev sqlite-dev tzdata
 COPY . .
 RUN RUSTFLAGS="-C target-cpu=native" cargo build --release
 
