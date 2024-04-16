@@ -13,6 +13,9 @@ use crate::{
     writer,
 };
 
+use std::time::Duration;
+use rand::{thread_rng, Rng};
+
 pub fn update(feed: &Feed) {
     let connection = sqlite::open();
 
