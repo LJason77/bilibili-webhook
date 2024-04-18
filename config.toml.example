@@ -13,6 +13,8 @@ option = "--no-danmaku --proxy=no"
 path = "bilibili/Gamker"
 # 是否更新，设为 false 即不更新
 update = true
+# 是否需要一个随机的延迟，设为false即无延迟
+delay = true
 
 [[feed]]
 url = "https://rsshub.app/bilibili/user/video/96639395"
@@ -20,3 +22,4 @@ interval = 60
 option = "--no-danmaku --proxy=no"
 path = "bilibili/Academia"
 update = false
+delay = true

@@ -21,8 +21,11 @@ pub fn update(feed: &Feed) {
 
     loop {
         // 随机延迟0到600秒
-        let sleep_time = thread_rng().gen_range(0..600);
-        std::thread::sleep(Duration::from_secs(sleep_time));
+        let delay = &feed.delay;
+        if *delay == true {
+            let sleep_time = thread_rng().gen_range(0..600);
+            std::thread::sleep(Duration::from_secs(sleep_time));
+        }
 
         let url = &feed.url;
 

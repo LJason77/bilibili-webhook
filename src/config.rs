@@ -14,6 +14,7 @@ pub struct Feed {
     pub option: String,
     pub path: String,
     pub update: bool,
+    pub delay: bool,
 }
 
 impl Config {
