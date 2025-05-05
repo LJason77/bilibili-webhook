@@ -3,9 +3,9 @@ use std::{thread::sleep, time::Duration};
 use log::{error, info, warn};
 use quick_xml::de::from_str;
 use reqwest::blocking::{self, Response};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct Item {
     pub title: String,
     pub description: String,
@@ -15,7 +15,7 @@ pub struct Item {
     pub author: String,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct Channel {
     pub title: String,
     pub description: String,
@@ -24,7 +24,7 @@ pub struct Channel {
     pub item: Vec<Item>,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct Rss {
     pub channel: Channel,
 }
@@ -32,10 +32,10 @@ pub struct Rss {
 fn get(url: &str, mut retry: i8) -> Response {
     blocking::get(url).unwrap_or_else(|error| {
         error!("请求失败，请检查配置和网络!");
-        info!("get retry {:?}", retry);
-        error!("{:?}", error);
+        info!("get retry {retry:?}");
+        warn!("{error:?}");
         if retry == 0 {
-            error!("源 {} 更新失败，暂停更新！", url);
+            error!("源 {url} 更新失败，暂停更新！");
             panic!()
         } else {
             let interval = 15;

@@ -1,0 +1,8 @@
+# 最低 Rust 版本
+msrv = "1.86"
+# 最大嵌套级别
+excessive-nesting-threshold = 5
+# 将块后面的分号移到块内部，即最后一个表达式之后
+semicolon-inside-block-ignore-singleline = true
+# 函数或方法可以拥有的最大参数数量
+too-many-arguments-threshold = 5

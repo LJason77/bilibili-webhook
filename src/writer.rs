@@ -8,20 +8,20 @@ use log::error;
 pub fn bilili(source: &str, output: &str) {
     let log_file = format!("config/log/{source}.log");
     create_dir_all("config/bilili").unwrap_or_else(|error| {
-        error!("{:?}", error);
+        error!("{error:?}");
     });
     create_dir_all("config/log").unwrap_or_else(|error| {
-        error!("{:?}", error);
+        error!("{error:?}");
     });
     let mut file =
         OpenOptions::new().create(true).append(true).open(&log_file).unwrap_or_else(|error| {
             if error.kind() == ErrorKind::NotFound {
                 File::create(&log_file).unwrap_or_else(|error| {
-                    error!("{:?}", error);
+                    error!("{error:?}");
                     panic!();
                 })
             } else {
-                error!("{:?}", error);
+                error!("{error:?}");
                 panic!();
             }
         });

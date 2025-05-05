@@ -1,13 +1,16 @@
 [package]
 name = "bilibili-webhook"
-version = "0.1.8"
+version = "0.1.9"
 authors = ["LJason <ljason@ljason77.com>"]
 edition = "2021"
-rust-version = "1.75"
+rust-version = "1.86"
 readme = "README.md"
 repository = "https://github.com/LJason77/bilibili-webhook"
 keywords = ["bilibili", "download", "webhook"]
 categories = ["command-line-utilities"]
+
+[lints.clippy]
+pedantic = "deny"
 
 [profile.release]
 strip = "debuginfo"
@@ -17,8 +20,8 @@ panic = "abort"
 
 [dependencies]
 log = "0.4"
-quick-xml = { version = "0.31", features = ["serialize"] }
-rusqlite = { version = "0.30", features = ["bundled"] }
+quick-xml = { version = "0.37", features = ["serialize"] }
+rusqlite = { version = "0.35", features = ["bundled"] }
 serde = { version = "1", features = ["derive"] }
 threadpool = "1"
 toml = "0.8"
@@ -29,6 +32,6 @@ default-features = false
 features = ["console_appender", "rolling_file_appender", "compound_policy", "fixed_window_roller", "size_trigger", "config_parsing", "pattern_encoder", "yaml_format"]
 
 [dependencies.reqwest]
-version = "0.11"
+version = "0.12"
 default-features = false
 features = ["blocking"]

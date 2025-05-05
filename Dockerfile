@@ -1,4 +1,4 @@
-FROM rust:alpine as builder
+FROM rust:alpine AS builder
 
 RUN apk add -qq --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community musl-dev libc6-compat openssl-dev sqlite-dev tzdata
 
@@ -27,4 +27,4 @@ USER pi
 
 VOLUME ["/app/config", "/app/downloads"]
 
-CMD bilibili-webhook
+CMD ["bilibili-webhook"]

@@ -1,15 +1,15 @@
 use log::info;
 use rusqlite::{params, Connection, Result};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct Source {
     pub id: u32,
     pub link: String,
     pub title: String,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct Content {
     pub id: u32,
     pub source_id: u32,
@@ -51,7 +51,7 @@ impl Source {
         connection
             .execute("insert into sources (link, title) VALUES (?1, ?2)", params![link, title])
             .expect("插入 sources 表失败");
-        info!("已添加订阅源：[{}]", title);
+        info!("已添加订阅源：[{title}]");
         Self::query_where(connection, link).unwrap()
     }
 
