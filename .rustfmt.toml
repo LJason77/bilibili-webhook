@@ -1,7 +1,26 @@
-edition = "2021"
-max_width = 100
+# 指定解析器使用哪个版本
+edition = "2024"
+# 控制函数签名中参数的布局
+fn_params_layout = "Compressed"
+# 使用空格进行对齐
+hard_tabs = false
+# 每行最大宽度
+max_width = 150
+# 将多个派生合并为一个派生
+merge_derives = true
+# Unix 行结尾
 newline_style = "Unix"
-reorder_imports = true
+# 删除嵌套括号
+remove_nested_parens = true
+# 按组的字母顺序对 import 和 extern crate 语句重新排序（组之间用换行符分隔）
+reorder_imports = false
+# 按组中字母顺序重新排序 mod 声明
+reorder_modules = true
+# 每个制表符的空格数
+tab_spaces = 4
+# 如果可能，使用字段初始化简写
+use_field_init_shorthand = true
+# 所有宽度设置与 max_width 相同
 use_small_heuristics = "Max"
 
 # 稳定后取消注释
