@@ -1,6 +1,6 @@
 [package]
 name = "bilibili-webhook"
-version = "0.1.9"
+version = "0.1.10"
 authors = ["LJason <ljason@ljason77.com>"]
 edition = "2024"
 rust-version = "1.91"
@@ -11,6 +11,8 @@ categories = ["command-line-utilities"]
 
 [lints.clippy]
 pedantic = "deny"
+unwrap_used = "deny"
+expect_used = "deny"
 
 [profile.release]
 strip = "debuginfo"
@@ -20,11 +22,11 @@ panic = "abort"
 
 [dependencies]
 log = "0.4"
-quick-xml = { version = "0.37", features = ["serialize"] }
-rusqlite = { version = "0.35", features = ["bundled"] }
+quick-xml = { version = "0.38", features = ["serialize"] }
+rusqlite = { version = "0.37", features = ["bundled"] }
 serde = { version = "1", features = ["derive"] }
 threadpool = "1"
-toml = "0.8"
+toml = "0.9"
 
 [dependencies.log4rs]
 version = "1"

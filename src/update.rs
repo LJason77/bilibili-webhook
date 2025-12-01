@@ -5,7 +5,7 @@ use std::{
     process::{Child, Command, Stdio},
 };
 
-use log::info;
+use log::{error, info};
 
 use crate::{
     config::Feed,
@@ -14,19 +14,37 @@ use crate::{
 };
 
 pub fn update(feed: &Feed) {
-    let connection = sqlite::open();
+    let connection = match sqlite::open() {
+        Ok(conn) => conn,
+        Err(err) => {
+            error!("{err}");
+            panic!()
+        }
+    };
 
     loop {
         let url = &feed.url;
 
-        let rss = Rss::new(url);
+        let rss = match Rss::new(url) {
+            Ok(rss) => rss,
+            Err(error) => {
+                error!("获取订阅源 {url} 失败：{error}");
+                panic!()
+            }
+        };
 
         let channel = &rss.channel;
         // 订阅源
-        let source = Source::query_where(&connection, url)
-            .unwrap_or_else(|_| Source::insert(&connection, url, &channel.title));
+        let source = Source::query_where(&connection, url).unwrap_or_else(|_| match Source::insert(&connection, url, &channel.title) {
+            Ok(source) => source,
+            Err(error) => {
+                error!("插入订阅源失败：{error}");
+                panic!();
+            }
+        });
 
         let mut is_update = false;
+        let mut is_error = false;
 
         // 内容
         for item in &channel.item {
@@ -37,30 +55,51 @@ pub fn update(feed: &Feed) {
 
             // 返回错误，说明数据库没有这个内容，更新
             info!("[{}] 更新了一个新视频：{}", &source.title, &item.title);
-            // 下载新视频
-            match download(&item.link, feed) {
-                Ok(output) => {
-                    writer::bilili(&source.title, &item.link);
-                    let out = output.wait_with_output().unwrap();
-                    let out = String::from_utf8_lossy(&out.stdout);
-                    for line in out.split('\n') {
-                        writer::bilili(&source.title, line);
-                    }
-                    info!("\"{}\" 下载成功", &item.title);
-                    // 下载成功才在数据库添加内容
-                    Content::insert(&connection, source.id, &item.link, &item.title);
-                    is_update = true;
-                }
+
+            // 提前处理错误情况
+            let child = match download(&item.link, feed) {
+                Ok(output) => output,
                 Err(error) => {
-                    log::error!("{error}");
+                    error!("{error}");
+                    is_error = true;
+                    continue;
                 }
+            };
+
+            writer::bilili(&source.title, &item.link);
+            let output = match child.wait_with_output() {
+                Ok(output) => output,
+                Err(error) => {
+                    error!("{error}");
+                    is_error = true;
+                    continue;
+                }
+            };
+
+            if !output.status.success() {
+                error!("{}", String::from_utf8_lossy(&output.stderr));
+                is_error = true;
+                continue;
             }
+
+            let out = String::from_utf8_lossy(&output.stdout);
+            for line in out.split('\n') {
+                writer::bilili(&source.title, line);
+            }
+
+            info!("\"{}\" 下载成功", &item.title);
+            // 下载成功才在数据库添加内容
+            if let Err(e) = Content::insert(&connection, source.id, &item.link, &item.title) {
+                error!("数据库插入内容失败: {e}");
+                continue;
+            }
+            is_update = true;
         }
 
-        if is_update {
-            info!("[{}] 已更新！", &source.title);
+        if is_error {
+            error!("[{}] 存在错误，请检查！", &source.title);
         } else {
-            info!("[{}] 没有更新！", &source.title);
+            info!("[{}] {}！", &source.title, if is_update { "已更新" } else { "没有更新" });
         }
 
         // 线程休眠

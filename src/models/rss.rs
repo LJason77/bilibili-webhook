@@ -1,6 +1,6 @@
-use std::{thread::sleep, time::Duration};
+use std::{error::Error, thread::sleep, time::Duration};
 
-use log::{error, info, warn};
+use log::{error, warn};
 use quick_xml::de::from_str;
 use reqwest::blocking::{self, Response};
 use serde::{Deserialize, Serialize};
@@ -31,9 +31,7 @@ pub struct Rss {
 
 fn get(url: &str, mut retry: i8) -> Response {
     blocking::get(url).unwrap_or_else(|error| {
-        error!("请求失败，请检查配置和网络!");
-        info!("get retry {retry:?}");
-        warn!("{error:?}");
+        error!("请求失败，请检查配置和网络：{error:?}\nget retry {retry:?}");
         if retry == 0 {
             error!("源 {url} 更新失败，暂停更新！");
             panic!()
@@ -48,12 +46,11 @@ fn get(url: &str, mut retry: i8) -> Response {
 }
 
 impl Rss {
-    #[must_use]
-    pub fn new(url: &str) -> Self {
+    pub fn new(url: &str) -> Result<Self, Box<dyn Error>> {
         let retry: i8 = 5;
         let res = get(url, retry);
-        let body = res.text().expect("body 解析错误");
+        let body = res.text().map_err(|e| format!("body 解析错误：{e}"))?;
 
-        from_str(&body).expect("xml 解析失败")
+        Ok(from_str(&body).map_err(|e| format!("xml 解析错误：{e}"))?)
     }
 }

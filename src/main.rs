@@ -20,11 +20,12 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // 判断是否存在 sessdata 文件
     let sessdata = Path::new("config/SESSDATA.txt");
-    if !sessdata.exists() {
-        // 从系统环境变量获取 sessdata，再保存到本地
-        if let Some(sessdata) = var_os("SESSDATA") {
-            write("config/SESSDATA.txt", sessdata.to_str().unwrap()).expect("写入 SESSDATA 失败");
-        }
+    // 从系统环境变量获取 sessdata，再保存到本地
+    if !sessdata.exists()
+        && let Some(sessdata) = var_os("SESSDATA")
+        && let Err(error) = write("config/SESSDATA.txt", sessdata.into_encoded_bytes())
+    {
+        log::error!("写入 SESSDATA 失败: {error}");
     }
 
     // 提取需要更新的订阅
