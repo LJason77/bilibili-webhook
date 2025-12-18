@@ -12,6 +12,12 @@ mod models;
 mod update;
 mod writer;
 
+// 避免使用 musl 默认配置器
+// https://nickb.dev/blog/default-musl-allocator-considered-harmful-to-performance/
+#[cfg(target_env = "musl")]
+#[global_allocator]
+static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
+
 fn main() -> Result<(), Box<dyn Error>> {
     log4rs::init_file("log.yml", Deserializers::default())?;
     log::info!("RUA！");

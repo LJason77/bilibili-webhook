@@ -1,9 +1,9 @@
 [package]
 name = "bilibili-webhook"
-version = "0.1.10"
+version = "0.1.11"
 authors = ["LJason <ljason@ljason77.com>"]
 edition = "2024"
-rust-version = "1.91"
+rust-version = "1.92"
 readme = "README.md"
 repository = "https://github.com/LJason77/bilibili-webhook"
 keywords = ["bilibili", "download", "webhook"]
@@ -37,3 +37,6 @@ features = ["console_appender", "rolling_file_appender", "compound_policy", "fix
 version = "0.12"
 default-features = false
 features = ["blocking"]
+
+[target.'cfg(target_env = "musl")'.dependencies]
+mimalloc = { version = "0.1", features = ["override"] }
