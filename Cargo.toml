@@ -1,6 +1,6 @@
 [package]
 name = "bilibili-webhook"
-version = "0.1.11"
+version = "0.2.0"
 authors = ["LJason <ljason@ljason77.com>"]
 edition = "2024"
 rust-version = "1.92"
@@ -21,22 +21,17 @@ lto = "fat"
 panic = "abort"
 
 [dependencies]
+bili_core = { version = "0.1", features = ["fav"] }
 log = "0.4"
-quick-xml = { version = "0.38", features = ["serialize"] }
-rusqlite = { version = "0.37", features = ["bundled"] }
+rusqlite = { version = "0.38", features = ["bundled"] }
 serde = { version = "1", features = ["derive"] }
-threadpool = "1"
-toml = "0.9"
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
 
 [dependencies.log4rs]
 version = "1"
 default-features = false
 features = ["console_appender", "rolling_file_appender", "compound_policy", "fixed_window_roller", "size_trigger", "config_parsing", "pattern_encoder", "yaml_format"]
-
-[dependencies.reqwest]
-version = "0.12"
-default-features = false
-features = ["blocking"]
 
 [target.'cfg(target_env = "musl")'.dependencies]
 mimalloc = { version = "0.1", features = ["override"] }

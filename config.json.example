@@ -1,0 +1,16 @@
+[
+  {
+    "media_id": 1234,
+    "interval": 15,
+    "option": "--no-progress -b --no-color",
+    "path": "bilibili1",
+    "update": true
+  },
+  {
+    "media_id": 5678,
+    "interval": 15,
+    "option": "--no-progress -b --no-color",
+    "path": "bilibili2",
+    "update": false
+  }
+]

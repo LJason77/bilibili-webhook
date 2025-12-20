@@ -10,7 +10,8 @@
 
 bilibili-webhook 是受到 [RSSHub](https://github.com/DIYgod/RSSHub "Everything is RSSible")、[flowerss-bot](https://github.com/indes/flowerss-bot "一个支持应用内阅读的 Telegram RSS Bot") 和 [download-webhook](https://github.com/DIYgod/download-webhook "Download files through webhook") 的启发而诞生的。
 
-相比 [download-webhook](https://github.com/DIYgod/download-webhook "Download files through webhook")，bilibili-webhook 不需要 IFTTT，不需要公网 ip 或域名，只需 [RSSHub](https://github.com/DIYgod/RSSHub "Everything is RSSible")，在内网即可使用。但目前功能上仅针对 B站 的视频，后期视需求可能会兼容其他站点。
+相比 [download-webhook](https://github.com/DIYgod/download-webhook "Download files through webhook")，bilibili-webhook 不需要 IFTTT，不需要公网 ip 或域名，~~只需 [RSSHub](https://github.com/DIYgod/RSSHub "Everything is RSSible")~~ 0.2 版本已不需要 RSSHub，在内网即可使用。
+但目前功能上仅针对 B站 的视频，后期视需求可能会兼容其他站点。
 
 ## 安装（docker）
 
@@ -24,7 +25,36 @@ docker build -t bilibili-webhook .
 
 容器内有两个重要的挂载点：`/app/config` 和 `/app/downloads`，前者存放配置以及日志，后者是存放下载的视频。
 
-将 *config.toml.example* 复制并重命名为 *config.toml* 放在将要挂载 `/app/config` 的目录下。
+复制 *config.json.example* 并重命名为 *config.json*，放在将要挂载 `/app/config` 的目录下。
+
+配置的 json 文件示例如下：
+
+```json
+[
+  {
+    "media_id": 1234,
+    "interval": 15,
+    "option": "--no-progress -b --no-color",
+    "path": "dir1",
+    "update": true
+  },
+  {
+    "media_id": 5678,
+    "interval": 15,
+    "option": "--no-progress -b --no-color",
+    "path": "dir2",
+    "update": false
+  }
+]
+```
+
+- media_id: 收藏夹的 id，在收藏夹页面的 url 中可见 **fid**。
+- interval: 下载间隔，单位为**分**。
+- option: 下载时使用的参数，具体可查看 [yutto](https://github.com/yutto-dev/yutto) 的项目说明。
+- path: 下载的目录，相对于 `/app/downloads`。
+- update: 是否启用更新。
+
+注意：不管更新的收藏夹数量为多少，均需要以**数组**形式。
 
 如果需要下载 4K 视频，可在运行命令中 `-e` 附上大会员的 **SESSDATA**，具体可查看 [yutto](https://github.com/yutto-dev/yutto) 的项目说明。如果没有 **SESSDATA**，即下载普通的 1080P 视频。
 
